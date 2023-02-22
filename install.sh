@@ -2,12 +2,12 @@
 
 #Variables for running the script
 BinaryLocation=/usr/local/bin
-PrometheusLibDir=/var/lib/prometheus
-PrometheusConfDir=/etc/prometheus
-LokiConfDir=/etc/loki
-LokiDataDir=/data/loki
-PromtailConfDir=/etc/promtail
-PromtailDataDir=/data/promtail
+PrometheusLibDir=/var/lib/prometheus/
+PrometheusConfDir=/etc/prometheus/
+LokiConfDir=/etc/loki/
+LokiDataDir=/data/loki/
+PromtailConfDir=/etc/promtail/
+PromtailDataDir=/data/promtail/
 LokiVer=v2.7.3
 PromtailVer=v2.7.3
 
