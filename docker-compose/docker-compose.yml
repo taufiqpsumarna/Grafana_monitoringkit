@@ -1,0 +1,77 @@
+version: '3.2'
+services:
+
+  prometheus:
+      image: prom/prometheus:latest
+      user: root
+      container_name: prometheus
+      restart: unless-stopped
+      volumes:
+        - ./data/prometheus/config:/etc/prometheus/
+        - ./data/prometheus/data:/prometheus
+        - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+      ports:
+        - 9090:9090
+      networks:
+        - monitoring
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    user: root
+    container_name: node_exporter
+    restart: unless-stopped
+    expose:
+      - 9100
+    networks:
+      - monitoring
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    user: root
+    container_name: cadvisor
+    restart: unless-stopped
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:ro
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    - /dev/disk/:/dev/disk:ro
+    networks:
+      - monitoring
+    ports:
+      - 8080:8080
+
+  loki:
+    image: grafana/loki:2.7.3
+    user: root
+    container_name: grafana_loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+     - ./config/loki-local-config.yaml:/etc/loki/local-config.yaml
+     - ./loki/data:/data/loki
+    networks:
+     - monitoring
+
+  promtail:
+    image: grafana/promtail:2.7.3
+    user: root
+    container_name: grafana_promtail
+    volumes:
+      # custom config will read logs from the containers of
+      # this project
+      - ./config/promtail-config.yaml:/etc/promtail/config.yml
+      # to read container labels and logs
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - /var/log:/var/log
+    depends_on:
+      - loki
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
