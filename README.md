@@ -13,6 +13,12 @@ This script will install the monitoring kit for grafana dashboard, it will inclu
 - Loki
 - Promtail
 
+## Docker Compose Version, Include
+- Cadvisor
+- Loki
+- Prometheus
+- Promtail
+
 ## Grafana Dashboard
 - [Cadvisor Dashboard](https://grafana.com/grafana/dashboards/14282-cadvisor-exporter)
 - [Node Exporter Dashboard](https://grafana.com/grafana/dashboards/1860-node-exporter-full)
@@ -38,6 +44,12 @@ PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-poli
 UBUNTU_CODENAME=jammy
 
 Linux 5.15.0-1028-aws #32-Ubuntu SMP Mon Jan 9 12:28:07 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+
+docker --version
+Docker version 20.10.17, build 100c701
+
+docker-compose --version
+docker-compose version 1.29.2, build unknown
 ```
 
 Note: 
