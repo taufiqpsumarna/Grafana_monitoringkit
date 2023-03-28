@@ -19,8 +19,8 @@ Run the script:
 sudo ./install_prometheus_loki.sh
 ```
 ## Dashboard Image
-<img src =./images/cadvisor.png width=50%/><br>
-<img src =./images/node_exporter.png width=50%/><br>
+<img src =./images/cadvisor.png/><br>
+<img src =./images/node_exporter.png/><br>
 
 This script will install the monitoring kit for grafana dashboard, it will include:
 
