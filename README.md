@@ -1,6 +1,23 @@
 # Monitoring Kit for Grafana Dashboard
 This script installs a monitoring kit for Grafana dashboard that includes resource monitoring with Prometheus, Node_Exporter, and Cadvisor, and logging monitoring with Loki and Promtail. It also includes a Docker Compose version that includes Cadvisor, Loki, Prometheus, and Promtail. The Grafana dashboard includes a Cadvisor dashboard and a Node Exporter dashboard.
 
+## Prerequisites
+Ubuntu Server
+User with sudo privileges
+
+## Usage
+Download the script:
+```
+wget https://raw.githubusercontent.com/taufiqpsumarna/Grafana_monitoringkit/main/install.sh
+```
+Make the script executable:
+```
+chmod +x install_prometheus_loki.sh
+```
+Run the script:
+```
+sudo ./install_prometheus_loki.sh
+```
 ## Dashboard Image
 <img src =./images/cadvisor.png width=50%/><br>
 <img src =./images/node_exporter.png width=50%/><br>
@@ -25,6 +42,7 @@ This script will install the monitoring kit for grafana dashboard, it will inclu
 ## Grafana Dashboard
 - [Cadvisor Dashboard](https://grafana.com/grafana/dashboards/14282-cadvisor-exporter)
 - [Node Exporter Dashboard](https://grafana.com/grafana/dashboards/1860-node-exporter-full)
+
 
 ### Installation Reference:
 - https://computingforgeeks.com/how-to-install-prometheus-and-node-exporter-on-debian/
