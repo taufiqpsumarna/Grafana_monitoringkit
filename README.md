@@ -76,4 +76,9 @@ docker-compose version 1.29.2, build unknown
 Note: 
 That the monitoring kit maybe will not working properly in another operating system, and it will use the default configuration only, you can customize the configuration before start installing
 
-Credits: M Taufiq Permana Sumarna - February 2023
+## License
+This project is licensed under the MIT License.
+
+## Credits
+
+**This Scripts Created By* [taufiqpsumarna](https://github.com/taufiqpsumarna)
