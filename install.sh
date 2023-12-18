@@ -8,8 +8,8 @@ LokiConfDir=/etc/loki/
 LokiDataDir=/data/loki/
 PromtailConfDir=/etc/promtail/
 PromtailDataDir=/data/promtail/
-LokiVer=v2.7.3
-PromtailVer=v2.7.3
+LokiVer=v2.8.7
+PromtailVer=v2.8.7
 
 #Prometheus
 echo "Create prometheus user and group"
@@ -24,17 +24,14 @@ echo "Download and install prometheus"
 sudo apt-get update 
 sudo apt-get -y install wget curl unzip zip
 curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4|wget -qi - 
-tar xvf prometheus*.tar.gz 
-cd prometheus*/
+tar -xvf prometheus*.tar.gz -C prometheus
 
 echo "Move prometheus binary and tools"
-sudo mv prometheus promtool $BinaryLocation
-sudo mv consoles/ console_libraries/ $PrometheusConfDir
+sudo mv prometheus/prometheus promtool $BinaryLocation
+sudo mv prometheus/consoles/ console_libraries/ $PrometheusConfDir
 
 echo "Copy prometheus configuration in $PrometheusConfDir"
-cd ..
-sudo cp ./config/prometheus.yaml $PrometheusConfDir
-rm -rf prometheus
+sudo cp -R config/prometheus.yaml $PrometheusConfDir1
 
 echo "Create prometheus systemd configuration"
 sudo tee /etc/systemd/system/prometheus.service<<EOF
@@ -73,16 +70,14 @@ echo "Reload systemd daemon and start prometheus services"
 sudo systemctl daemon-reload
 sudo systemctl start prometheus
 sudo systemctl enable prometheus
-sudo systemctl status prometheus
 
 #Node_Exporters
 echo "Download node_exporter"
 curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest| grep browser_download_url|grep linux-amd64|cut -d '"' -f 4|wget -qi -
 
 echo "Extract and move binary files"
-tar -xvf node_exporter*.tar.gz
-cd  node_exporter*/
-sudo cp node_exporter $BinaryLocation
+tar -xvf node_exporter*.tar.gz -C node_exporter
+sudo cp -R node_exporter/node_exporter $BinaryLocation
 
 echo "Create node_exporter systemd configuration"
 sudo tee /etc/systemd/system/node_exporter.service <<EOF
@@ -106,7 +101,7 @@ echo "Reload systemd daemon and start node_exporter services"
 sudo systemctl daemon-reload
 sudo systemctl start node_exporter
 sudo systemctl enable node_exporter
-systemctl status node_exporter
+
 
 echo "Restart prometheus services"
 sudo systemctl restart prometheus
@@ -116,16 +111,16 @@ echo "Download loki"
 curl -LO https://github.com/grafana/loki/releases/download/${LokiVer}/loki-linux-amd64.zip
 
 echo "Extract and move binary files"
-unzip loki-linux-amd64.zip
-sudo chmod a+x loki-linux-amd64
-sudo mv loki-linux-amd64 $BinaryLocation/loki
+unzip loki-linux-amd64.zip -d loki
+sudo chmod a+x loki
+sudo mv loki $BinaryLocation/loki
 
 echo "Create loki configuration and data directory"
 sudo mkdir $LokiConfDir
 sudo mkdir -p $LokiDataDir
 
 echo "Copy loki configuration"
-sudo cp ./config/loki-config.yaml $LokiConfDir
+sudo cp -R config/loki-config.yaml $LokiConfDir
 
 echo "Create loki systemd configuration"
 sudo tee /etc/systemd/system/loki.service<<EOF
@@ -144,9 +139,9 @@ WantedBy=multi-user.target
 EOF
 
 echo "Reload systemd daemon and start loki services"
+
 sudo systemctl daemon-reload
 sudo systemctl start loki
-sudo systemctl status loki
 
 #Promtail
 echo "Download promtail"
@@ -162,13 +157,13 @@ sudo mkdir $PromtailConfDir
 sudo mkdir -p $PromtailDataDir
 
 echo "Copy promtail configuration"
-sudo cp ./config/promtail-config.yaml $PromtailConfDir
+sudo cp -R config/promtail-config.yaml $PromtailConfDir
 
 echo "Create promtail systemd configuration"
 sudo tee /etc/systemd/system/promtail.service<<EOF
 [Unit]
 Description=Promtail service
-After=network.target
+After=network.targe
 
 [Service]
 Type=simple
@@ -182,4 +177,10 @@ EOF
 echo "Reload systemd daemon and start loki services"
 sudo systemctl daemon-reload
 sudo systemctl start promtail
-sudo systemctl status promtail
+
+
+echo "Check all service"
+sudo systemctl is-active node_exporter --quiet && echo "Node Exporter is Running" || echo "Node Exporter Failed to start"
+sudo systemctl is-active promtail --quiet && echo "Promtail is Running" || echo "Promtail Failed to start"
+sudo systemctl is-active prometheus --quiet && echo "Prometheus is Running" || echo "Prometheus Failed to start"
+sudo systemctl is-active loki --quiet && echo "Loki is Running" || echo "Loki Failed to start"
