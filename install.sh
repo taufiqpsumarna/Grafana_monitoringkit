@@ -31,7 +31,7 @@ sudo mv prometheus/prometheus promtool $BinaryLocation
 sudo mv prometheus/consoles/ console_libraries/ $PrometheusConfDir
 
 echo "Copy prometheus configuration in $PrometheusConfDir"
-sudo cp -R config/prometheus.yaml $PrometheusConfDir1
+sudo cp -R config/prometheus.yaml $PrometheusConfDir
 
 echo "Create prometheus systemd configuration"
 sudo tee /etc/systemd/system/prometheus.service<<EOF
