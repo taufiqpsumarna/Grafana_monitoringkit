@@ -9,13 +9,13 @@ clients:
   - url: http://127.0.0.1:3100/loki/api/v1/push
 
 scrape_configs:
-- job_name: systemlogs
+- job_name: systemlogs #Get All Log under /var/log/*
   static_configs:
   - targets:
       - localhost
     labels:
       job: varlogs
-      __path__: /var/log/*.log
+      __path__: /var/log/**/*.log
 - job_name: grafanalogs
   static_configs:
   - targets:
