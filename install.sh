@@ -98,7 +98,7 @@ echo "Check node_exporter version"
 node_exporter --version
 
 echo "Reload systemd daemon and start node_exporter services"
-sudo systemctl daemon-reload
+sudo systemctl daemon-reload  
 sudo systemctl start node_exporter
 sudo systemctl enable node_exporter
 
@@ -112,8 +112,8 @@ curl -LO https://github.com/grafana/loki/releases/download/${LokiVer}/loki-linux
 
 echo "Extract and move binary files"
 unzip loki-linux-amd64.zip -d loki
-sudo chmod a+x loki
-sudo mv loki $BinaryLocation/loki
+sudo chmod a+x loki-linux-amd64
+sudo mv loki-linux-amd64 $BinaryLocation/loki
 
 echo "Create loki configuration and data directory"
 sudo mkdir $LokiConfDir
