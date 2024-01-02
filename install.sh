@@ -10,6 +10,8 @@ PromtailConfDir=/etc/promtail/
 PromtailDataDir=/data/promtail/
 LokiVer=v2.8.7
 PromtailVer=v2.8.7
+NodeExporterVer=1.7.0
+PrometheusVer=2.48.1
 
 #Prometheus
 echo "Create prometheus user and group"
@@ -23,12 +25,12 @@ for i in rules rules.d files_sd; do sudo mkdir -p $PrometheusConfDir${i}; done
 echo "Download and install prometheus"
 sudo apt-get update 
 sudo apt-get -y install wget curl unzip zip
-curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest|grep browser_download_url|grep linux-amd64|cut -d '"' -f 4|wget -qi - 
-tar -xvf prometheus*.tar.gz -C prometheus
+wget https://github.com/prometheus/prometheus/releases/download/v${PrometheusVer}/prometheus-${PrometheusVer}.linux-amd64.tar.gz
 
 echo "Move prometheus binary and tools"
-sudo mv prometheus/prometheus promtool $BinaryLocation
-sudo mv prometheus/consoles/ console_libraries/ $PrometheusConfDir
+tar -xvf prometheus*.tar.gz
+sudo cp -R prometheus*/prometheus promtool $BinaryLocation
+sudo cp -R prometheus*/consoles/ console_libraries/ $PrometheusConfDir
 
 echo "Copy prometheus configuration in $PrometheusConfDir"
 sudo cp -R config/prometheus.yaml $PrometheusConfDir
@@ -73,11 +75,11 @@ sudo systemctl enable prometheus
 
 #Node_Exporters
 echo "Download node_exporter"
-curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest| grep browser_download_url|grep linux-amd64|cut -d '"' -f 4|wget -qi -
+wget https://github.com/prometheus/node_exporter/releases/download/v${NodeExporterVer}/node_exporter-${NodeExporterVer}.linux-amd64.tar.gz
 
 echo "Extract and move binary files"
-tar -xvf node_exporter*.tar.gz -C node_exporter
-sudo cp -R node_exporter/node_exporter $BinaryLocation
+tar -xvf node_exporter*.tar.gz
+sudo cp -R node_exporter*/node_exporter $BinaryLocation
 
 echo "Create node_exporter systemd configuration"
 sudo tee /etc/systemd/system/node_exporter.service <<EOF
@@ -98,7 +100,7 @@ echo "Check node_exporter version"
 node_exporter --version
 
 echo "Reload systemd daemon and start node_exporter services"
-sudo systemctl daemon-reload  
+sudo systemctl daemon-reload
 sudo systemctl start node_exporter
 sudo systemctl enable node_exporter
 
@@ -108,7 +110,7 @@ sudo systemctl restart prometheus
 
 #Loki
 echo "Download loki"
-curl -LO https://github.com/grafana/loki/releases/download/${LokiVer}/loki-linux-amd64.zip
+wget https://github.com/grafana/loki/releases/download/${LokiVer}/loki-linux-amd64.zip
 
 echo "Extract and move binary files"
 unzip loki-linux-amd64.zip -d loki
@@ -145,7 +147,7 @@ sudo systemctl start loki
 
 #Promtail
 echo "Download promtail"
-curl -LO https://github.com/grafana/loki/releases/download/${LokiVer}/promtail-linux-amd64.zip
+wget https://github.com/grafana/loki/releases/download/${LokiVer}/promtail-linux-amd64.zip
 
 echo "Extract and move binary files"
 unzip promtail-linux-amd64.zip
