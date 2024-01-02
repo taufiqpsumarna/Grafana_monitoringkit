@@ -115,7 +115,7 @@ wget https://github.com/grafana/loki/releases/download/${LokiVer}/loki-linux-amd
 echo "Extract and move binary files"
 unzip loki-linux-amd64.zip -d loki
 sudo chmod a+x loki-linux-amd64
-sudo mv loki-linux-amd64 $BinaryLocation/loki
+sudo mv loki/loki-linux-amd64 $BinaryLocation/loki
 
 echo "Create loki configuration and data directory"
 sudo mkdir $LokiConfDir
@@ -144,6 +144,7 @@ echo "Reload systemd daemon and start loki services"
 
 sudo systemctl daemon-reload
 sudo systemctl start loki
+sudo systemctl enable loki
 
 #Promtail
 echo "Download promtail"
@@ -179,6 +180,7 @@ EOF
 echo "Reload systemd daemon and start loki services"
 sudo systemctl daemon-reload
 sudo systemctl start promtail
+sudo systemctl enable promtail
 
 
 echo "Check all service"
